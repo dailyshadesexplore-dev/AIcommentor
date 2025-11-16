@@ -1,0 +1,36 @@
+{
+    "name": "My commentor",
+    "version": "1.0",
+    "description": "An AI extension that will help you write engaging comments.",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "scripting"
+    ],
+    "host_permissions": [
+        "https://www.linkedin.com/feed/*"
+    ],
+    "background": {
+        "service_worker": "service_worker.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.linkedin.com/feed/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "action":{
+        "default_popup": "panel.html",
+        "default_icon": {
+            "16": "assets/icon16.png",
+            "48": "assets/icon48.png",
+            "128": "assets/icon128.png"
+        },
+        "default_title": "My commentor"
+    },
+    "manifest_version": 3
+}

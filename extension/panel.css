@@ -1,0 +1,37 @@
+/* extension/panel.css */
+#ai-comment-panel {
+  font-family: Arial, sans-serif;
+  width: 320px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
+  padding: 8px;
+  z-index: 999999999; /* very high to appear above LinkedIn */
+}
+#ai-comment-panel .panel-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:8px;
+}
+#ai-comment-panel .comment {
+  border-radius:8px;
+  padding:8px;
+  margin:6px 0;
+  border:1px solid #eee;
+}
+#ai-comment-panel .comment .copy-btn {
+  float:right;
+  background:#0073b1;
+  color:white;
+  border:none;
+  padding:4px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+#ai-comment-panel .panel-footer {
+  margin-top:6px;
+  font-size:11px;
+  color:#666;
+  text-align:right;
+}
