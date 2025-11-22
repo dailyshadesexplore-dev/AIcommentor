@@ -2,7 +2,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse)=>{
     if(message.action === "generateComment"){
         const [post, prompt] = message.text.split("\\\n");
         console.log(prompt)
-        fetch('http://127.0.0.1:8000/AIcomments', {
+        fetch('https://aicommentor.onrender.com/AIcomments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
