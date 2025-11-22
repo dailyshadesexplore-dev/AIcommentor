@@ -23,7 +23,16 @@
             ]
         }
     ],
-    "action":{
+    "web_accessible_resources": [
+      {
+        "resources": [
+          "assets/btnIcon.png"
+        ],
+        "matches": ["<all_urls>"]
+      }
+    ],
+
+    "action": {
         "default_popup": "panel.html",
         "default_icon": {
             "16": "assets/icon16.png",

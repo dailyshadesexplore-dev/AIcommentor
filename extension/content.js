@@ -9,41 +9,85 @@ function getPostDescription(postEl) {
 }
 function addBtnToPost(postEl) {
     if (postEl.querySelector('.ai-comment-btn')) return;
+    const panelInput = document.createElement('div');
+    panelInput.className = 'ai-comment-input';
+    panelInput.style.display = 'flex';
+    panelInput.style.justifyContent = 'flex-start';
+    panelInput.style.alignItems = 'center';
+    panelInput.style.gap = '10px';
+    panelInput.style.padding = '10px';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.style.border = '1px solid #b53dffff';
+    input.style.borderRadius = '15px';
+    input.style.padding = '8px 12px';
+    input.style.flex = '1';
+    input.placeholder = "Ask AI to comment as...";
+    panelInput.appendChild(input);
 
     const btn = document.createElement('button');
-    btn.innerText = 'Commentor';
     btn.className = 'ai-comment-btn';
-    btn.style.marginLeft = '10px';
+    btn.style.display = 'flex';
+    btn.style.alignItems = 'center';
+    btn.style.justifyContent = 'center';
+    btn.style.border = 'none';
+    btn.style.background = 'transparent';
+    btn.style.cursor = 'pointer';
+    btn.style.marginBottom = '0';
+    btn.style.padding = '0';
     btn.associatedPost = postEl;
+    // Use <img> for icon, get correct extension asset path
+    const icon = document.createElement('img');
+    icon.src = chrome.runtime.getURL('assets/btnIcon.png')
+
+    icon.alt = 'Comment';
+    icon.width = 32;
+    icon.height = 32;
+    btn.appendChild(icon);
+    panelInput.appendChild(btn);
+
+    
     let actionBar = postEl.querySelector('.feed-shared-social-action-bar.feed-shared-social-action-bar--full-width.feed-shared-social-action-bar--has-social-counts')?.parentElement;
-    if (!actionBar) {
-        postEl.appendChild(btn);
-    }
-    else {
-        actionBar.appendChild(btn);
-    }
+    // if (!actionBar) {
+        postEl.appendChild(panelInput);
+
+    // }
+    // else {
+    //     actionBar.appendChild(panelInput);
+    // }
 
 
 btn.addEventListener('click', () => {
     btn.disabled = true;
-    const originalText = btn.textContent;
-    btn.textContent = 'Generating...';
-
-    // Use stable extractor for post description
+    btn.firstChild && (btn.firstChild.style.opacity = '0.5');
+    document.querySelectorAll('#ai-comment-panel').forEach(panel => panel.remove());
     const postContent = getPostDescription(postEl);
-
-    console.log("Post description:", postContent);
-
-    sendMessageToBackground({ action: 'generateComment', text: postContent }, (res) => {
+    sendMessageToBackground({ action: 'generateComment', text: `${postContent} \\\n ${input.value}` }, (res) => {
         console.log('Received response:', res);
 
         if (res?.success && res.comments) {
+            input.value = '';
             const panel = document.createElement('div');
             panel.id = 'ai-comment-panel';
-            panel.innerHTML = `<div class='panel-header'>${res.comments}</div>`;
+            panel.style.marginTop = '10px';
+            panel.style.padding = '10px';
+            panel.style.border = '1px solid #eee';
+            panel.style.background = '#fafbfc';
+
+            const panelHeader = document.createElement('div');
+            panelHeader.className = 'panel-header';
+            panelHeader.textContent = res.comments;
+            panelHeader.style.marginBottom = '8px';
+
             const panelCopy = document.createElement('button');
             panelCopy.innerText = 'Copy Comment';
-            panelCopy.style.margin = '10px';
+            panelCopy.style.margin = '0 0 0 8px';
+            panelCopy.style.padding = '4px 10px';
+            panelCopy.style.borderRadius = '8px';
+            panelCopy.style.border = '1px solid #b53dff';
+            panelCopy.style.background = '#fff';
+            panelCopy.style.cursor = 'pointer';
             panelCopy.addEventListener('click', () => {
                 navigator.clipboard.writeText(res.comments).then(() => {
                     panelCopy.textContent = 'Copied!';
@@ -52,7 +96,16 @@ btn.addEventListener('click', () => {
                     }, 2000);
                 });
             });
-            panel.appendChild(panelCopy);
+
+            // Flex container for input and button
+            const flexRow = document.createElement('div');
+            flexRow.style.display = 'flex';
+            flexRow.style.alignItems = 'center';
+            flexRow.appendChild(panelHeader);
+            flexRow.appendChild(panelCopy);
+
+            panel.appendChild(flexRow);
+
             // Append panel to actionBar if exists, else post itself
             if (!actionBar) {
                 postEl.appendChild(panel);
@@ -61,15 +114,15 @@ btn.addEventListener('click', () => {
             }
         }
 
-        // Re-enable button and restore original text
+        // Re-enable button and restore icon
         btn.disabled = false;
-        btn.textContent = originalText || 'Commentor';
+        btn.firstChild && (btn.firstChild.style.opacity = '1');
     });
 });
 }
 
 function scanAndAddButtons() {
-    const posts = document.querySelectorAll('article, div.feed-shared-update-v2, div.occludable-update');
+    const posts = document.querySelectorAll('div.feed-shared-update-v2');
     posts.forEach(p => {
         addBtnToPost(p);
 

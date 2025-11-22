@@ -11,6 +11,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API"))
 
 class PostBody(BaseModel):
     post: str
+    prompt: str
 
 origins = [
     "http://localhost:3000",  # React default
@@ -32,7 +33,7 @@ async def welcome():
 @app.post("/AIcomments")
 def get_ai_comments(body: PostBody):
     post = body.post
-    
+    prompt = body.prompt
     try:
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -51,6 +52,7 @@ REQUIREMENTS:
 - Add specific value by referencing the key point(s) of the post.
 - Do NOT use emojis unless the post uses them.
 - Avoid clichés like “Great insights!” or “Thanks for sharing!”.
+- Tailor the comment to reflect the prompt: "{prompt}"
 
 LINKEDIN POST:
 "{post}"
@@ -64,7 +66,7 @@ Write only the final comment with no explanations, no titles, and no quotes."""}
             temperature=0.7,
         )
         comment = response.choices[0].message.content.strip()
-        print(comment)
+        print(post,"",prompt)
         return {"comment": comment}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
