@@ -71,6 +71,6 @@ Write only the final comment with no explanations, no titles, and no quotes."""}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__=="__main__":
-    import uvicorn
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+if __name__ == "__main__":
+    import os
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
