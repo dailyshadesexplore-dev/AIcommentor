@@ -26,7 +26,14 @@
     "web_accessible_resources": [
       {
         "resources": [
-          "assets/btnIcon.png"
+          "assets/btnIcon.png",
+          "assets/edit.png",
+          "assets/Professional.png",
+          "assets/Casual.png",
+          "assets/Humorous.png",
+            "assets/Proactive.png",
+            "assets/Expertise.png"
+
         ],
         "matches": ["<all_urls>"]
       }

@@ -40,25 +40,38 @@ def get_ai_comments(body: PostBody):
             messages=[
                 {"role": "system", "content": "You are a helpful assistant that generates engaging LinkedIn comments."},
                 {"role": "user", "content": f"""
-                 You are an expert LinkedIn communication assistant skilled in writing short, engaging, human-sounding comments.
+                 You are an expert LinkedIn communication assistant who writes concise, human-sounding comments.
 
 TASK:
-Analyze the following LinkedIn post and generate a concise, high-value comment.
+Analyze the LinkedIn post and create a comment that follows the specific instruction provided in {prompt}
+—for example: ask a clarifying question, add an insight, challenge an idea respectfully, etc.
 
 REQUIREMENTS:
-- Length: 2–3 lines.
-- Tone: professional, positive, and conversational.
-- Style: natural, NOT generic or overly enthusiastic.
-- Add specific value by referencing the key point(s) of the post.
-- Do NOT use emojis unless the post uses them.
-- Avoid clichés like “Great insights!” or “Thanks for sharing!”.
-- Tailor the comment to reflect the prompt: "{prompt}"
 
-LINKEDIN POST:
-"{post}"
+2–3 lines only
 
-OUTPUT FORMAT:
-Write only the final comment with no explanations, no titles, and no quotes."""}
+Professional, positive, conversational tone
+
+Natural writing — sound like you are curious, humble.not generic, not overly enthusiastic
+
+if asking question, start the comment with appreciation.
+
+Reference relevant point(s) from {post}
+
+No emojis unless the post contains them
+
+Avoid clichés like “Great post!” or “Thanks for sharing”
+
+The comment must directly reflect the action requested in {prompt}
+
+INPUT:
+
+{post} = the LinkedIn post
+
+{prompt} = the specific instruction for the style or intent of the comment
+
+OUTPUT:
+Write only the final comment (no explanations, no titles, no quotes)."""}
             ],
             max_tokens=100,
             n=1,
