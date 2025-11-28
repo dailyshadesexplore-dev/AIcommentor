@@ -20,7 +20,11 @@
             ],
             "js": [
                 "content.js"
+            ],
+            "css": [
+                "panel.css"
             ]
+
         }
     ],
     "web_accessible_resources": [
@@ -38,7 +42,6 @@
         "matches": ["<all_urls>"]
       }
     ],
-
     "action": {
         "default_popup": "panel.html",
         "default_icon": {

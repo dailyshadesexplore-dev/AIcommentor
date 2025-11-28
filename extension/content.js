@@ -5,8 +5,9 @@ function getPostDescription(postEl) {
     const classic = postEl.querySelector('[class*="update-components-text"]');
     if (classic) return classic.innerText.trim();
     return "";
+
 }
-function addBtnToPost(postEl) {
+function BtnToComment(postEl) {
     if (postEl.querySelector('.ai-comment-btn')) return;
     const panelInput = document.createElement('div');
     panelInput.className = 'ai-comment-input';
@@ -209,12 +210,123 @@ function addBtnToPost(postEl) {
     });
 }
 
+function BtnToPost(postEl) {
+    if(postEl) {
+    const position = postEl.querySelector('div.share-creation-state__content-scrollable')
+    const postDescInputClass = document.createElement('div');
+    postDescInputClass.className = 'ai-post-desc-input';
+    postDescInputClass.style.position = 'absolute';
+    postDescInputClass.style.zIndex = '9999';
+    postDescInputClass.style.height = '50vh'
+    postDescInputClass.style.top = '0px';
+    postDescInputClass.style.right = '0px';
+    postDescInputClass.style.display = 'flex';
+    postDescInputClass.style.flexDirection = 'column'
+    postDescInputClass.style.justifyContent = 'flex-start';
+    postDescInputClass.style.alignItems = 'center';
+    postDescInputClass.style.gap = '10px';
+    postDescInputClass.style.padding = '10px';
+    position.appendChild(postDescInputClass);
+
+    const inputField = document.createElement('textarea');
+    inputField.style.position='relative';
+    inputField.type = 'textarea';
+    inputField.style.border = '1px solid #b53dffff';
+    inputField.style.width = '350px'
+    inputField.style.height = '100%'
+    inputField.style.borderRadius = '15px';
+    inputField.style.outline = 'b53dfff'
+    inputField.style.boxShadow = '0 0 3px #b53dff';
+    inputField.style.padding = '8px 12px';
+    inputField.style.flex = '1';
+    inputField.placeholder = "Ask AI to create post about...";
+    postDescInputClass.appendChild(inputField);
+
+    const postGenerateBtn = document.createElement('button');
+    postGenerateBtn.className = 'ai-generate-post-btn';
+    postGenerateBtn.style.float = 'left';
+    postGenerateBtn.style.cursor = 'pointer';
+    const postIcon = document.createElement('img');
+    postIcon.src = chrome.runtime.getURL('assets/btnIcon.png')
+    postIcon.alt = 'Generate Post';
+    postIcon.width = 32;
+    postIcon.height = 32;
+    postGenerateBtn.style.position='absolute';
+    postGenerateBtn.style.bottom='8px';
+    postGenerateBtn.style.right='15px';
+    postGenerateBtn.appendChild(postIcon);
+    postDescInputClass.appendChild(postGenerateBtn);
+
+    postGenerateBtn.addEventListener('click',()=>{
+    console.log(inputField.value  )
+    sendMessageToBackground({action:'generatePost',text: `${inputField.value}`},(res)=>{
+        console.log('Received response:', res);
+                    if (res?.success && res.comments) {
+                input.value = '';
+                const panel = document.createElement('div');
+                panel.id = 'ai-comment-panel';
+                panel.style.marginTop = '10px';
+                panel.style.padding = '10px';
+                panel.style.border = '1px solid #eee';
+                panel.style.background = '#fafbfc';
+
+                const panelHeader = document.createElement('div');
+                panelHeader.className = 'panel-header';
+                panelHeader.textContent = res.posts;
+                panelHeader.style.marginBottom = '8px';
+
+                const panelCopy = document.createElement('button');
+                panelCopy.innerText = 'Copy Comment';
+                panelCopy.style.margin = '0 0 0 8px';
+                panelCopy.style.padding = '4px 10px';
+                panelCopy.style.borderRadius = '8px';
+                panelCopy.style.border = '1px solid #b53dff';
+                panelCopy.style.background = '#fff';
+                panelCopy.style.cursor = 'pointer';
+                panelCopy.addEventListener('click', () => {
+                    navigator.clipboard.writeText(res.posts).then(() => {
+                        panelCopy.textContent = 'Copied!';
+                        setTimeout(() => {
+                            panelCopy.textContent = 'Copy Comment';
+                        }, 2000);
+                    });
+                });
+
+                // Flex container for input and button
+                const flexRow = document.createElement('div');
+                flexRow.style.display = 'flex';
+                flexRow.style.alignItems = 'center';
+                flexRow.appendChild(panelHeader);
+                flexRow.appendChild(panelCopy);
+
+                panel.appendChild(flexRow);
+                testPostion = postEl.querySelector('div .ql-editor')
+                // Append panel to actionBar if exists, else post itself
+                if (!actionBar) {
+                    testPostion.appendChild(panel);
+                } else {
+                    testPostion.appendChild(panel);
+                }
+            }
+
+    })
+    })
+}
+}
+
 function scanAndAddButtons() {
     const posts = document.querySelectorAll('div.feed-shared-update-v2');
     posts.forEach(p => {
-        addBtnToPost(p);
-
+        BtnToComment(p);
     });
+    // Try both possible class names for robustness
+    const postShareBoxes = document.querySelectorAll('.share-Box, .share-box');
+    postShareBoxes.forEach(box => {
+        if (!box.querySelector('.ai-post-desc-input')) {
+            BtnToPost(box);
+        }
+    });
+
 }
 
 const observer = new MutationObserver((mutations) => {

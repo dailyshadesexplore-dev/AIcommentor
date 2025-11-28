@@ -1,11 +1,12 @@
 /* extension/panel.css */
-#ai-comment-panel {
-  font-family: Arial, sans-serif;
-  width: 320px;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.2);
-  padding: 8px;
+
+.ai-comment-panel {
+  font-family: 'Trebuchet MS', sans-serif !important;
+  width: 320px !important;
+  background: rgba(255,255,255,0.80) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 6px 24px rgba(91, 91, 91, 0.2) !important;
+  padding: 8px ;
   z-index: 999999999; /* very high to appear above LinkedIn */
 }
 #ai-comment-panel .panel-header {
